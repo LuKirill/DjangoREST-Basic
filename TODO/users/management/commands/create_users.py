@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.utils.crypto import get_random_string
+from users.models import CustomUser
 
 
 class Command(BaseCommand):
@@ -12,4 +13,4 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         total = kwargs['total']
         for i in range(total):
-            User.objects.create_user(username=get_random_string(7), email='', password='1234567890')
+            CustomUser.objects.create_user(username=get_random_string(7), email='', password='1234567890')
