@@ -1,10 +1,10 @@
-from rest_framework.renderers import JSONRenderer, AdminRenderer
+from rest_framework.renderers import JSONRenderer
 from rest_framework.viewsets import ModelViewSet
 
-from .models import CustomUser
-from .serializer import CustomUserModelSerializer
-from TODO_2.models import TODO, Project, Users
-from TODO_2.serializer_2 import TODOModelSerializer, ProjectModelSerializer, UsersModelSerializer
+from .models import TODO, Project, Users
+from .serializer_2 import TODOModelSerializer, ProjectModelSerializer, UsersModelSerializer
+from users.serializer import CustomUserModelSerializer
+from users.models import CustomUser
 
 
 class CustomUserModelViewSet(ModelViewSet):
@@ -12,7 +12,7 @@ class CustomUserModelViewSet(ModelViewSet):
     serializer_class = CustomUserModelSerializer
 
 
-class TODOModelViewSet(ModelViewSet):
+class TODOModelSerializer(ModelViewSet):
     queryset = TODO.objects.all()
     serializer_class = TODOModelSerializer
 
