@@ -24,4 +24,4 @@ class ProjectModelSerializer(ModelViewSet):
   
 class UsersModelSerializer(ModelViewSet):
     queryset = Users.objects.all()
-    serializer_class = UsersModelSerializer  
+    serializer_class = UsersModelSerializer
