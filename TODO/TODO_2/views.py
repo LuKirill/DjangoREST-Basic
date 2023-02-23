@@ -1,5 +1,6 @@
 from rest_framework.renderers import JSONRenderer
 from rest_framework.viewsets import ModelViewSet
+from rest_framework import viewsets
 
 from .models import TODO, Project, Users
 from .serializer_2 import TODOModelSerializer, ProjectModelSerializer, UsersModelSerializer
@@ -12,16 +13,18 @@ class CustomUserModelViewSet(ModelViewSet):
     serializer_class = CustomUserModelSerializer
 
 
-class TODOModelSerializer(ModelViewSet):
+class TODOModelViewSet(ModelViewSet):
     queryset = TODO.objects.all()
     serializer_class = TODOModelSerializer
+    filterset_fields = ['title']
 
 
-class ProjectModelSerializer(ModelViewSet):
+class ProjectModelViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectModelSerializer
+    filterset_fields = ['name']
 
   
-class UsersModelSerializer(ModelViewSet):
+class UsersModelViewSet(ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UsersModelSerializer
