@@ -27,11 +27,6 @@ class ProjectCustomDjangoFilterViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectModelSerializer
     filterset_class = ProjectFilter
 
-  
-class UsersModelSerializer(ModelViewSet):
-    queryset = Users.objects.all()
-    serializer_class = UsersModelSerializer
-
 
 class ProjectModelViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateAPIView,
                           GenericViewSet):

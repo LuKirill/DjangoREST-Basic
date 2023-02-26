@@ -24,17 +24,15 @@ router.register('user_set', UsersModelViewSet)
 router.register('Project', ProjectModelViewSet)
 router.register('TODO', TODOModelViewSet)
 
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
-    path('api/', include(router.urls)),
-]
-
-
 router = DefaultRouter()
 # router.register('users', CustomUserModelViewSet)
 router.register('users', CustomUserModelViewSet)
 router.register('user_set', UsersModelViewSet)
 router.register('TODO', TODOModelViewSet)
 router.register('Project', ProjectModelViewSet)
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')),
+    path('api/', include(router.urls)),
+]

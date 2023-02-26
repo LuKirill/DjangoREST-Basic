@@ -28,3 +28,8 @@ class ProjectModelViewSet(ModelViewSet):
 class UsersModelViewSet(ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UsersModelSerializer
+
+
+class TodoFilterViewSet(viewsets.ModelViewSet):
+    queryset = TODO.objects.all()
+    serializer_class = TODOModelSerializer
