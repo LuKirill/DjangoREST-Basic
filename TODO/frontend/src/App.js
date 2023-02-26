@@ -34,7 +34,7 @@ class App extends React.Component {
         // const users = response.data
         this.setState(
           {
-            'users': response.data
+            'users': response.data.results
           }
         )
       }).catch(error => console.log(error))
