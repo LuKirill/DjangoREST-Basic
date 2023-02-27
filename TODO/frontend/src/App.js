@@ -27,12 +27,12 @@ class App extends React.Component {
         const project1 = {id: 1, name: 'Project1', repo_link: 'http://repo1.ru'}
         const projects = [project1]
         const todo1 = {id: 1, title: 'Title1', body: 'Lorem1', author: '1'}
-        const TODO_2 = [todo1]
+        const todos = [todo1]
 
         this.state = {
         'users': users,
         'projects': projects,
-        'TODO_2': TODO_2
+        'todos': todos
         }
     }
 
@@ -41,19 +41,19 @@ class App extends React.Component {
         axios.get('http://127.0.0.1:8000/api/user_set/')
             .then(response => {
 
-                    this.setState({users: response.data})
+                    this.setState({users: response.data.results})
             }).catch(error => console.log(error))
 
         axios.get('http://127.0.0.1:8000/api/Project/')
             .then(response => {
 
-                    this.setState({projects: response.data})
+                    this.setState({projects: response.data.results})
             }).catch(error => console.log(error))
 
         axios.get('http://127.0.0.1:8000/api/TODO/')
             .then(response => {
 
-                    this.setState({todos: response.data})
+                    this.setState({todos: response.data.results})
             }).catch(error => console.log(error))
     }
 
@@ -80,7 +80,7 @@ class App extends React.Component {
                         <Route exact path='/projects' component={() => <ProjectList
                         projects={this.state.projects} />} />
                         <Route exact path='/TODO' component={() => <ToDoList
-                        projects={this.state.TODO_2} />} />
+                        projects={this.state.todos} />} />
                         <Route component={NotFound404} />
                     </Switch>
                 </BrowserRouter>
