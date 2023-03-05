@@ -3,6 +3,8 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import viewsets
 from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, DestroyModelMixin
+from rest_framework.permissions import BasePermission
+from django.contrib.auth.hashers import make_password
 
 from .models import CustomUser
 from .serializer import CustomUserModelSerializer
@@ -47,3 +49,8 @@ class CustomUserModelViewSet(ListModelMixin, RetrieveModelMixin, UpdateAPIView, 
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserModelSerializer
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+
+
+class StaffOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_staff
