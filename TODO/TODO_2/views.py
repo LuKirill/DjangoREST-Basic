@@ -9,7 +9,6 @@ from users.serializer import CustomUserModelSerializer
 from users.models import CustomUser
 
 
-
 class StaffOnly(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_staff
