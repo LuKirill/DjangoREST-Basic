@@ -1,14 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, UserManager
+
 
 class Project(models.Model):
     name = models.CharField(max_length=32)
-    repo_link = models.URLField()
+    repo_link = models.URLField(null=True, blank=True)
+
 
 class Users(models.Model):
-    project = models.OneToOneField(Project, related_name='user_set', on_delete=models.CASCADE)
+    project = models.OneToOneField(Project, related_name='user_set', 
+                                   on_delete=models.CASCADE)
     first_name = models.CharField(max_length=32)
     second_name = models.CharField(max_length=32)
     email = models.EmailField()
+
 
 class TODO(models.Model):
     title = models.CharField(max_length=64)
