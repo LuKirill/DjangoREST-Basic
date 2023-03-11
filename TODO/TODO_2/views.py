@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import BasePermission
 
 from .models import TODO, Project, Users
-from .serializer_2 import TODOModelSerializer, ProjectModelSerializer, UserModelSerializer
+from .serializer_2 import TODOModelSerializer, ProjectModelSerializer, UsersModelSerializer
 from users.serializer import CustomUserModelSerializer
 from users.models import CustomUser
 
@@ -31,9 +31,9 @@ class ProjectModelViewSet(ModelViewSet):
     filterset_fields = ['name']
 
 
-class UserModelViewSet(ModelViewSet):
+class UsersModelViewSet(ModelViewSet):
     queryset = Users.objects.all()
-    serializer_class = UserModelSerializer
+    serializer_class = UsersModelSerializer
 
 
 class CustomUserModelViewSet(ModelViewSet):

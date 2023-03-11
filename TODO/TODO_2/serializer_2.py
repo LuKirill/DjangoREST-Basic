@@ -9,7 +9,7 @@ from rest_framework import serializers
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = Users
         fields = '__all__'
 
 
@@ -39,7 +39,7 @@ class ProjectModelSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class UserModelSerializer(ModelSerializer):
+class UsersModelSerializer(ModelSerializer):
     class Meta:
         model = Users
         fields = '__all__'
