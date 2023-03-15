@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_filters',
     'userapp',
     'drf_yasg',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -177,4 +178,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 2,
 
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
+}
+
+GRAPHENE = {
+    "SCHEMA": "todo.schema.schema"
 }

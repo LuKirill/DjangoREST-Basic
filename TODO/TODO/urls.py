@@ -24,6 +24,7 @@ from drf_yasg import openapi
 from userapp.views import UserListAPIView
 from users.views import CustomUserModelViewSet
 from TODO_2.views import TODOModelViewSet, ProjectModelViewSet, UsersModelViewSet
+from graphene_django.views import GraphQLView
 
 
 schema_view = get_schema_view(
@@ -57,4 +58,5 @@ urlpatterns = [
          name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),
          name='schema-redoc'),
+    path("graphql/", GraphQLView.as_view(graphiql=True)),
 ]
