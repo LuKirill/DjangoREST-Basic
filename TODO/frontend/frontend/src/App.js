@@ -1,131 +1,171 @@
-import React from 'react'
-import UserList from './components/User.js'
-import ToDoList from './components/ToDo.js'
-import ProjectList from './components/Project.js'
-import {BrowserRouter, Route, Switch, Redirect, Link} from 'react-router-dom'
+import React from 'react';
+import logo from './logo.svg';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Redirect
+} from "react-router-dom";
 import axios from 'axios'
+import './bootstrap/css/bootstrap.min.css'
+import './bootstrap/css/sticky-footer-navbar.css'
+import Footer from './components/Footer.js'
+import Navbar from './components/Menu.js'
+import UserList from './components/User.js'
+import {ProjectList, ProjectDetail} from './components/Project.js'
+import ToDoList from './components/ToDo.js'
 import LoginForm from './components/Auth.js'
-import TodoForm from './components/TodoForm.js'
-import Cookies from 'universal-cookie';
 
 
-const NotFound404 = ({ location }) => {
-    return (
-        <div>
-          <h1>Страница по адресу '{location.pathname}' не найдена</h1>
-        </div>
-    )
-}
+const DOMAIN = 'http://127.0.0.1:8001/api/'
+const get_url = (url) => `${DOMAIN}${url}`
 
 
 class App extends React.Component {
-
     constructor(props) {
         super(props)
         this.state = {
+            navbarItems: [
+                {name: 'Users', href: '/'},
+                {name: 'Projects', href: '/projects'},
+                {name: 'TODOs', href: '/TODO'},
+            ],
             users: [],
-            user_sets: [],
-            user_set: [],
-            TODO: []
+            projects: [],
+            project: {},
+            todos: [],
+            auth: {username: '', is_login: false}
         }
     }
 
-    set_token(token) {
-        const cookies = new Cookies()
-        cookies.set('token', token)
-        this.setState({'token': token}, ()=>this.load_data())
-    }
-
-    is_authenticated() {
-        return this.state.token != ''
-    }
-    logout() {
-        this.set_token('')
-    }
-
-    get_token_from_storage() {
-        const cookies = new Cookies()
-        const token = cookies.get('token')
-        this.setState({'token': token}, ()=>this.load_data())
-    }
-    get_token(username, password) {
-        axios.post('http://127.0.0.1:8000/api-token-auth/', {username: username,
-    password: password})
-        .then(response => {
-            this.set_token(response.data['token'])
-        }).catch(error => alert('Неверный логин или пароль'))
-    }
-
-    get_headers() {
-        let headers = {
-            'Content-Type': 'application/json'
-        }
-    if (this.is_authenticated())
-        {
-            headers['Authorization'] = 'Token ' + this.state.token
-        }
-        return headers
-    }
-
-    deleteTodo(id) {
-        const headers = this.get_headers()
-        axios.delete(`http://127.0.0.1:8000/api/TODO/${id}`, {headers: headers})
+    login(username, password) {
+        axios.post(get_url('token/'), {username: username, password: password})
             .then(response => {
-                this.setState({todos: this.state.todos.filter((item) => item.id !==id)})
-        }).catch(error => console.log(error))
+                const result = response.data
+                const access = result.access
+                const refresh = result.refresh
+                localStorage.setItem('login', username)
+                localStorage.setItem('access', access)
+                localStorage.setItem('refresh', refresh)
+                this.setState({'auth': {username: username, is_login: true}})
+                this.load_data()
+                 //    <BrowserRouter>
+                 //     <Switch>
+                 // <Redirect from='/authors1' to='/'/>
+                 //     <Switch>
+            }).catch(error => {
+            if (error.response.status === 401) {
+                alert('Неверный логин или пароль')
+            } else {
+                console.log(error)
+            }
+        })
+    }
+
+
+    logout() {
+        localStorage.setItem('login', '')
+        localStorage.setItem('access', '')
+        localStorage.setItem('refresh', '')
+        this.setState({'auth': {username: '', is_login: false}})
     }
 
     load_data() {
+        let headers = {
+            'Content-Type': 'application/json'
+        }
+        if (this.state.auth.is_login) {
+            const token = localStorage.getItem('access')
+            headers['Authorization'] = 'Bearer ' + token
+        }
 
-        const headers = this.get_headers()
-        axios.get('http://127.0.0.1:8000/api/user_set/', {headers})
+        axios.get(get_url('user_set/'), {headers})
             .then(response => {
-                this.setState({user_set: response.data})
-            }).catch(error => console.log(error))
+                //console.log(response.data)
+                this.setState({users: response.data})
+            }).catch(error =>
 
-        axios.get('http://127.0.0.1:8000/api/TODO/', {headers})
+            console.log(error)
+        )
+
+        axios.get(get_url('Project/'), {headers})
             .then(response => {
-                this.setState({ToDo: response.data})
-            }).catch(error => console.log(error))
+                //console.log(response.data)
+                this.setState({projects: response.data})
+            }).catch(error =>
+            console.log(error)
+        )
+
+        axios.get(get_url('TODO/'), {headers})
+            .then(response => {
+                //console.log(response.data)
+                this.setState({todos: response.data})
+            }).catch(error =>
+            console.log(error)
+        )
     }
 
     componentDidMount() {
-        this.get_token_from_storage()
+
+        // Получаем значения из localStorage
+        const username = localStorage.getItem('login')
+        if ((username != "") & (username != null)) {
+            this.setState({'auth': {username: username, is_login: true}}, () => this.load_data())
+        }
     }
+
 
     render() {
         return (
-            <div className="App">
-                <BrowserRouter>
-                    <nav>
-                        <ul>
-                            <li>
-                                <Link to='/'>Users</Link>
-                            </li>
-                            <li>
-                                <Link to='/TODO'>ToDo</Link>
-                            </li>
-                            <li>
-                                {this.is_authenticated() ? <button
-                                onClick={()=>this.logout()}>Logout</button> :
-                                <Link to='/login'>Login</Link>}
-                            </li>
-                        </ul>
-                    </nav>
-                    <Switch>
-                        <Route exact path='/' component={ () => <ToDoList items={this.state.user_sets} />} />
-                        <Route exact path='/TODO' component={() => <ToDoList items={this.state.todos}
-                            deleteTodo={(id)=>this.deleteTodo(id)} />} />
-                        <Route exact path='/TODO/create' component={() => <TodoForm />} />
-                        <Route exact path='/login' component={() => <LoginForm get_token={(username, password) =>
-                            this.get_token(username, password)} />} />
-                        <Redirect from='/user_set' to='/' />
-                        <Route component={NotFound404} />
-                    </Switch>
-                </BrowserRouter>
-            </div>
+            <Router>
+                <header>
+                    <Navbar navbarItems={this.state.navbarItems} auth={this.state.auth} logout={() => this.logout()}/>
+                </header>
+                <main role="main" class="flex-shrink-0">
+                    <div className="container">
+                        <Switch>
+                            <Route exact path='/'>
+                                <UserList users={this.state.users}/>
+                            </Route>
+                            <Route exact path='/projects'>
+                                <ProjectList items={this.state.projects}/>
+                            </Route>
+                            <Route exact path='/todos'>
+                                <ToDoList items={this.state.todos}/>
+                            </Route>
+                            <Route exact path='/login'>
+                                <LoginForm login={(username, password) => this.login(username, password)}/>
+                            </Route>
+                            <Route path="/project/:id" children={<ProjectDetail getProject={(id) => this.getProject(id)}
+                                                                                item={this.state.project}/>}/>
+                        </Switch>
+                    </div>
+                </main>
+
+                <Footer/>
+            </Router>
+
+
         )
     }
+
+    getProject(id) {
+
+        let headers = {
+            'Content-Type': 'application/json'
+        }
+        console.log(this.state.auth)
+        if (this.state.auth.is_login) {
+            const token = localStorage.getItem('access')
+            headers['Authorization'] = 'Bearer ' + token
+        }
+
+        axios.get(get_url(`/api/projects/${id}`), {headers})
+            .then(response => {
+                this.setState({project: response.data})
+            }).catch(error => console.log(error))
+    }
 }
+
 
 export default App;
